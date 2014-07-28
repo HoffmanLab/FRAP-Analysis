@@ -121,12 +121,12 @@ labelMat = full(labelMat);              %convert back to full matrix format
 
 final = labelMat(2:(size(labelMat,1)-1), 2:(size(labelMat,2)-1)); %remove padding
 
-rgb = label2rgb(final, 'jet', 'k', 'shuffle');
-figure
-subplot(1,2,1);
-imagesc(imOrig);
-subplot(1,2,2);
-imagesc(rgb);
+% rgb = label2rgb(final, 'jet', 'k', 'shuffle');
+% figure
+% subplot(1,2,1);
+% imagesc(imOrig);
+% subplot(1,2,2);
+% imagesc(rgb);
 
 return
 

@@ -45,6 +45,7 @@ res = load(fn{1});
 res=res(npblch:end);
 nele=length(res);
 t=(1:nele).*keywords.dt;
+t=t';
 if ~isfield(keywords,'sfo')
     fo=min(res);
 else
@@ -71,7 +72,7 @@ if isfield(keywords,'tmax')
 end
 
 ft = fittype('FRAP_FIT_FUNC(x,a,b,c)');
-f = fit(t',res',ft,'StartPoint',a);
+f = fit(t,res,ft,'StartPoint',a);
 
 t12=log(2)/f.c;
 

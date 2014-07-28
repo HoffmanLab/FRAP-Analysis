@@ -1,11 +1,10 @@
-function name = FRAP_naming(bname,framen,fan,tyvec,ncon)
+function name = FRAP_naming(bname,fan,tyvec,ncon)
 
 % This function generates the name of a FRAP file. It can be used to
 % generate filenames to read as well as for saving
 
 % INPUTS:
 % bname - base name for the file
-% framen - the movie fram that name is for
 % fan - the focal adhesion number the name is for
 % tyvec - type vector containing information regarding whether the polygon
 %       is for the background, a control, or a bleached polygon
@@ -31,14 +30,14 @@ tname=bname(1:ppos(1)-1);
 
 %Determine the nimber of FA
 if type == 1 
-    num=num2str(fan-1);
+    num=num2str(fan-2);
 elseif type == 2 
-    num=num2str(fan-ncon-1);
+    num=num2str(fan-ncon-2);
 else
     num='0';
 end
 
 %construct the name
-name=[pre tname '_' num2str(framen) '_' num '.dat'];
+name=[pre tname '_' num '.dat'];
 
 end
