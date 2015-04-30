@@ -174,7 +174,7 @@ function [p,pinit] = FIND_FA(img,p,pinit,xdim,ydim,pix)
        temp(:,:) = 0;
        temp(fao == big) = 1;
        infa = zeros(xdim,ydim);
-       infa(ymin:ymax,xmin:xmax) = temp;
+       infa(ymin-2*pix:ymax+2*pix,xmin-2*pix:xmax+2*pix) = temp;
        p = mask_2_con(infa);
    end
 end

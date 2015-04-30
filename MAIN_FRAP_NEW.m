@@ -18,7 +18,7 @@ keywords.showfit = 1;
 % for each data set, check if need to generate polygons & parameters -> do it
 
 keywords.read = input('Use previously generated polygons? Enter (1) if yes, (0) if no: ');
-if ~keywords.red
+if ~keywords.read
     for k = 1:numexp
         frap_files = file_search([expcell{k} '\w+_t66.TIF'],keywords.folder);
         analyze = zeros(1,1);
@@ -54,14 +54,15 @@ for k = 1:numexp
     nblch = load(fullfile(keywords.folder,['nblch_' expcell{k} '.dat']));
     pinit = mat2cell(pinit_mat,ncon+nblch,3);
     analyze = load(fullfile(keywords.folder,['analyze_' expcell{k} '.dat']));
-    for i = 1:length(frap_files)
+%     for i = 1:length(frap_files)
+    for i = 1:1
         if analyze(i) ~=0
-            keywords.recf = 0.4;
+            keywords.recf = 0.5;
             FA_FRAP_RECENT(strrep(frap_files{i},'t66','t\d+'),[ncon(i) nblch(i) reshape(pinit{i,1},1,numel(pinit{i,1}))],keywords)
             s = strfind(frap_files{i},'t');
             s = s(end);
             nname = frap_files{i}(1:s-2);
-            disp('FRAP Fitting')
+            disp(['FRAP Fitting: ' nname])
             FRAP_FIT_NEW(nname,keywords.blchtime+2,keywords)
         end
     end
