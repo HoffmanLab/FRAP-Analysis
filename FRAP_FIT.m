@@ -1,4 +1,4 @@
-function f = FRAP_FIT(dname,npblch,keywords)
+function FRAP_FIT_NEW(dname,npblch,keywords)
 
 % f = frap_fit('avg.control','FRAP_FIT_FUNC',2,keywords)
 
@@ -39,7 +39,20 @@ if ~isfield(keywords,'ctrain')
     keywords.ctrain=[0,0,0];
 end
 % get files
-fn = file_search(dname,keywords.folder);
+% fn = file_search(dname,keywords.folder);
+bkgf = file_search(['FRAP_bkg_' dname '.dat'],keywords.folder);
+bkg = load(bkgf{1});
+conf = file_search(['FRAP_con_' dname '.dat'],keywords.folder);
+con = load(conf{1})';
+blchf = file_search(['FRAP_blch_' dname '.dat'],keywords.folder);
+blch = load(blchf{1});
+fn = file_search(['norm_FRAP_blch_' dname '.dat'],keywords.folder);
+
+figure; hold on;
+plot(bkg./max(max(bkg)),'g','LineWidth',3)
+plot(con./max(max(con)),'r','LineWidth',3')
+plot(blch./max(max(blch)),'b','LineWidth',3')
+legend('Bkg','Con','Blch')
 
 data = load(fn{1});
 [r,c] = size(data);
@@ -76,7 +89,7 @@ for i = 1:r
     
     ft = fittype('FRAP_FIT_FUNC(x,a,b,c)');
     f = fit(t',res',ft,'StartPoint',a);
-    
+    disp(f)
     t12=log(2)/f.c;
     
     if keywords.showfit

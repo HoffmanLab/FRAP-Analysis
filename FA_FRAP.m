@@ -1,4 +1,4 @@
-function FA_FRAP(fname,parray,keywords)
+function FA_FRAP_RECENT(fname,parray,keywords)
 
 % FA_FRAP(imgstruct,[1,1,0,65,30],keywords)
 
@@ -43,14 +43,14 @@ if ~isfield(keywords,'recf')
     keywords.recf = 0.5;
 end
 if ~isfield(keywords,'bit')
-    keywords.bit = 8;
+    keywords.bit = 16;
 end
 
-f = file_search(fname,keywords.sourcefile);
+f = file_search(fname,keywords.folder);
 
-nblch = parray(1);
-ncon = parray(2);
-parray = parray(3:end);
+nblch = parray(2);
+ncon = parray(1);
+parray = reshape(parray(3:end),nblch+ncon,3);
 nele = length(f);
 backv = zeros(1,nele);
 blchv = zeros(nblch,nele);
@@ -63,37 +63,21 @@ tyvec = zeros(1,nfas+1)+2;
 tyvec(2:ncon+1) = 1;
 tyvec(1) = 0;
 
-% Read in initial image and get the polygons for the image
-img = double(imread(f{1}));
-img(img > 2^keywords.bit-1) = 0;
-[xdim,ydim] = size(img);
-img = (255+0.999).*(img-min(min(img)))/(max(max(img))-min(min(img)));
-if ~keywords.read
-    for i = 1:nfas+1
-        type = tyvec(i);
-        p = get_FA_poly(img,type,keywords.shift);
-        ti = 1;
-        name = FRAP_naming(f{ti},ti,i,tyvec,ncon);
-        save([pwd '/' keywords.destfile '/' name] ,'p','-ascii')
-    end
-end
-
-% For each type of polygon, find the average value
-imgix = repmat(1:xdim,ydim,1);
-imgiy = repmat([1:ydim]',1,xdim);
-
-count = 0;
-
 for i = 1:nele
     img = double(imread(f{i}));
+    [xdim,ydim] = size(img);
+    imgix = repmat(1:xdim,ydim,1);
+    imgiy = repmat([1:ydim]',1,xdim);
     for j = 1:length(tyvec);
         type = tyvec(j);
         if type == 0 % Background first
-            bname = FRAP_naming(f{1},1,1,tyvec,ncon);
+            bname = FRAP_naming(f{1},1,tyvec,ncon);
             p = load(bname);
             in = inpolygon(imgix,imgiy,p(:,1),p(:,2));
+            masked = img.*in;
+            backv(i) = mean(masked(masked~=0));
         else % Control or Bleached
-            bname = FRAP_naming(f{i},i,j,tyvec,ncon);
+            bname = FRAP_naming(f{i},j,tyvec,ncon);
             p = load(bname);
             in = inpolygon(imgix,imgiy,p(:,1),p(:,2));
             tb = mean(mean(img((img.*in)~=0)));
@@ -108,12 +92,7 @@ for i = 1:nele
                 tmask(in) = 1;
                 tmask = imdilate(tmask,str);
                 p = mask_2_con(tmask);
-                if type == 1 || (type == 2 && i <= (keywords.blchtime + 1))
-                    in = FIND_FA(img,p,parray,xdim,ydim);
-                elseif type == 2 && i > keywords.blchtime
-                    in = FIND_FA(img,p,keywords.newparray,xdim,ydim); 
-                    count = count+1;
-                end
+                in = FIND_FA(img,p,parray(j-1,:),xdim,ydim);
                 intemp = zeros(xdim,ydim);
                 intemp(in) = 1;
                 p = mask_2_con(intemp); 
@@ -121,10 +100,7 @@ for i = 1:nele
             end
         end
         % Store data into array
-        if type == 0
-            masked = img.*in;
-            backv(i) = mean(masked(masked~=0));
-        elseif type == 2
+        if type == 2
             pos = j-ncon-1;
             masked = img.*in;
             blchv(pos,i) = mean(masked(masked~=0));
@@ -134,21 +110,21 @@ for i = 1:nele
             conv(pos,i) = mean(masked(masked~=0));
         end
         if i ~= nele
-            wname = FRAP_naming(f{i+1},i+1,j,tyvec,ncon);
-            save([pwd '/' keywords.destfile '/' wname],'p','-ascii')
+            wname = FRAP_naming(f{i+1},j,tyvec,ncon);
+            save([pwd '/' keywords.folder '/' wname],'p','-ascii')
         end
     end
 end
 
 % Write out data
 nname = f{i};
-s = strfind(nname,'.');
+s = strfind(nname,'t');
 s = s(end);
-nname = nname(1:s-1);
+nname = nname(1:s-2);
 
-save(fullfile(pwd,keywords.destfile,['FRAP_bkg_' nname '.dat']),'backv','-ascii')
-save(fullfile(pwd,keywords.destfile,['FRAP_blch_' nname '.dat']),'blchv','-ascii')
-save(fullfile(pwd,keywords.destfile,['FRAP_con_' nname '.dat']),'conv','-ascii')
+save(fullfile(pwd,keywords.folder,['FRAP_bkg_' nname '.dat']),'backv','-ascii')
+save(fullfile(pwd,keywords.folder,['FRAP_blch_' nname '.dat']),'blchv','-ascii')
+save(fullfile(pwd,keywords.folder,['FRAP_con_' nname '.dat']),'conv','-ascii')
 
 % Normalize & Write Out Data
 
@@ -173,53 +149,11 @@ normblch(i,:) = bsblch(i,:)./bscon;
 normblch(i,:) = normblch(i,:)/mean(normblch(i,1:keywords.blchtime));
 end
 
-save([pwd '/' keywords.destfile '/' 'norm.FRAP_blch_' nname '.dat'],'normblch','-ascii')
+save([pwd '/' keywords.folder '/' 'norm_FRAP_blch_' nname '.dat'],'normblch','-ascii')
 
 end
 
 % SUBFUNCTIONS
-
-function pfa = get_FA_poly(img,type,shift)
-switch type
-    case 2
-        text='Draw a approximate polygon around the bleached FA';
-    case 1
-        text='Draw a approximate polygon around the control FA';
-    case 0
-        text='Draw a polygon in the background';
-end
-if shift
-    cont_image(img)
-end
-if type == 0
-    disp(text)
-    [pmask, px, py] = roipoly;
-    pfa = [px py];
-else
-    if type == 1
-        disp(text)
-    end
-    if type == 2
-        disp(text)
-    end
-    [appmask, ax, ay]=roipoly;
-    app = [ax ay];
-    
-    if ~shift
-        mins=[min(app(1,:)),min(app(2,:))];
-        maxs=[max(app(1,:)),max(app(2,:))];
-        img2=img(mins(1):maxs(1),mins(2):maxs(2));
-        cont_image(img2)
-        disp('draw a refined polygon around the FA')
-        pfa=roipoly;
-        pfa(1,:)=pfa(1,:)+mins(1);
-        pfa(2,:)=pfa(2,:)+mins(2);
-    else
-        pfa=app;
-    end
-end
-close
-end
 
 function infa = FIND_FA(img,pfa,parray,xdim,ydim)
 

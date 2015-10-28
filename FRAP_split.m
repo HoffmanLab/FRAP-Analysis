@@ -1,7 +1,7 @@
 function FRAP_split(imgexp,folder)
 
 % load images & get poly file structure
-% imgs = file_search([imgexp '_\d+_t01.TIF'],folder);
+% imgs = file_search([imgexp '_t01.TIF'],folder);
 imgs = file_search([imgexp '_\d+_t01.TIF'],folder);
 
 for i=1:length(imgs)
