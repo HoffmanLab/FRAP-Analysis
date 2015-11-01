@@ -8,13 +8,13 @@ for k = 1:numexp
             nname = frap_files{i}(1:s-2);
             FRAP_PostProcess(nname,keywords.folder)
             FRAP_PostProcess_Con(nname,keywords.folder)
+            blbn = input('Enter the control FA #: ');            
             plot_cents(nname,keywords.folder);
-            blbn = input('Enter the control FA #: ');
             plot_motion(nname,blbn,keywords.folder);
         end
     end
     FRAP_split(expcell{k},keywords.folder)
     disp('FRAP Split Fitting')
     FRAP_FIT_SPLIT(expcell{k},keywords.blchtime+2,keywords)
-    FRET_split(expcell{k},['blb_anl_pre_' strrep(expcell{k},'FRAP','FRET') '.txt'],keywords.folder)
+    FRET_split(expcell{k},['blb_anl_rp_' strrep(expcell{k},'FRAP','FRET') '.txt'],keywords.folder)
 end
