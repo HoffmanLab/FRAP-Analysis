@@ -12,14 +12,14 @@ maxvy = data(:,9);
 
 % find orientation of blob
 u = strfind(exp,'_');
-short = exp(1:u(1)-1);
-a = file_search(['blb_anl_pre_' short '_FRET.txt'],folder);
+short = exp(1:u(2)-1);
+a = file_search(['blb_anl_rp_' short '_FRET.txt'],folder);
 blb = load(a{1});
-blbcol = 30; % SHOULDN'T HARD CODE THESE...
-imgcol = 31;
-cellcol = 32;
-orcol = 29;
-imgn = str2num(exp(u(2)+1:end));
+blbcol = 27; % SHOULDN'T HARD CODE THESE...
+imgcol = 28;
+cellcol = 29;
+orcol = 26;
+imgn = str2num(exp(u(3)+1:end));
 celln = 1;
 blbrow = find(blb(:,imgcol)==imgn & blb(:,cellcol) == celln & blb(:,blbcol) == blbn);
 or = pi - blb(blbrow,orcol);
