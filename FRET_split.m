@@ -79,19 +79,23 @@ else
                         aminy1 = cy+H(1);
                         aminx2 = cx-W(1);
                         aminy2 = cy-H(1);
-                        side = sign((aminx1-aminx2)*(y1-aminy2)-(aminy1-aminy2)*(x1-aminx2));
-                        cdist = sqrt((x1-cx).^2+(y1-cy).^2);
+                        side = sign((aminx1-aminx2)*(x1-aminx2)-(aminy1-aminy2)*(y1-aminy2));
+                        cellx = btemp2(index,end-1);
+                        celly = btemp2(index,end);
+                        cdist = sqrt((x1-cellx).^2+(y1-celly).^2);
                         in_side = side(cdist == min(cdist));
                         in_side = in_side(1);
                         y_in_side = y1(side == in_side);
                         x_in_side = x1(side == in_side);
-                        mean_fret_front = mean(mean(fret_img(y_in_side,x_in_side)));
-                        mean_bsa_front = mean(mean(bsa_img(y_in_side,x_in_side)));
+                        ind_in_side = sub2ind(size(fret_img),y_in_side,x_in_side);
+                        mean_fret_front = mean(fret_img(ind_in_side));
+                        mean_bsa_front = mean(bsa_img(ind_in_side));
 %                         mean_bsd_front = mean(mean(bsd_img(y_in_side,x_in_side)));
                         y_out_side = y1(side ~= in_side);
                         x_out_side = x1(side ~= in_side);
-                        mean_fret_back = mean(mean(fret_img(y_out_side,x_out_side)));
-                        mean_bsa_back = mean(mean(bsa_img(y_out_side,x_out_side)));
+                        ind_out_side = sub2ind(size(fret_img),y_out_side,x_out_side);
+                        mean_fret_back = mean(fret_img(ind_out_side));
+                        mean_bsa_back = mean(bsa_img(ind_out_side));
 %                         mean_bsd_back = mean(mean(bsd_img(y_out_side,x_out_side)));
                         
                         add_cols = [mean_fret_front mean_fret_back mean_bsa_front mean_bsa_back];
@@ -104,11 +108,11 @@ else
             end
         end
     end
+	save(fullfile(pwd,folder,['FRETsplit_' bfile '.txt']),'newfile','-ascii')
+
+	col_names = {'Image ID','Cell ID','Blob ID','FRET Proximal','FRET Distal','Venus Proximal','Venus Distal'};
+	cell_final_data = num2cell(newfile);
+	cell_final_file = [col_names; cell_final_data];
+	xlswrite(fullfile(pwd,folder,['FRETsplit_' bfile '.xlsx']),cell_final_file)
 end
 
-save(fullfile(pwd,folder,['FRETsplit_' bfile '.txt']),'newfile','-ascii')
-
-col_names = {'Image ID','Cell ID','Blob ID','FRET Proximal','FRET Distal','Venus Proximal','Venus Distal'};
-cell_final_data = num2cell(newfile);
-cell_final_file = [col_names; cell_final_data];
-xlswrite(fullfile(pwd,folder,['FRETsplit_' bfile '.xlsx']),cell_final_file)
