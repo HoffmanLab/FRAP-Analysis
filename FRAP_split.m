@@ -42,7 +42,7 @@ for i=1:length(imgs)
             aminx2 = cx-W(1);
             aminy2 = cy-H(1);
             % decide which side is front/back, decide which points are front/back
-            side = sign((aminx1-aminx2)*(y1-aminy2)-(aminy1-aminy2)*(x1-aminx2));
+            side = sign((aminx1-aminx2)*(x1-aminx2)-(aminy1-aminy2)*(y1-aminy2));
             cdist = sqrt((x1-x).^2+(y1-y).^2);
             in_side = side(cdist == min(cdist));
             % avg front & back intensities
