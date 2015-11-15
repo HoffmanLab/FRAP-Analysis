@@ -2,7 +2,7 @@ function plot_motion(exp,blbn,folder)
 
 % find geometric centroid @ initial point
 b = file_search(['con_' exp '_poly_data.txt'],folder);
-data = load(b{1});
+data = load(fullfile(folder,'FRAP PostProcess Files',b{1}));
 geox = data(:,2);
 geoy = data(:,3);
 
@@ -12,14 +12,14 @@ maxvy = data(:,9);
 
 % find orientation of blob
 u = strfind(exp,'_');
-short = exp(1:u(2)-1);
+short = exp(1:u(1)-1);
 a = file_search(['blb_anl_rp_' short '_FRET.txt'],folder);
-blb = load(a{1});
+blb = load(fullfile(folder,a{1}));
 blbcol = 27; % SHOULDN'T HARD CODE THESE...
 imgcol = 28;
 cellcol = 29;
 orcol = 26;
-imgn = str2num(exp(u(3)+1:end));
+imgn = str2num(exp(u(end)+1:end));
 celln = 1;
 blbrow = find(blb(:,imgcol)==imgn & blb(:,cellcol) == celln & blb(:,blbcol) == blbn);
 or = pi - blb(blbrow,orcol);
@@ -49,11 +49,15 @@ matchy = -1*matchy;
 rmaxx = abs(rmaxx).*matchx;
 rmaxy = abs(rmaxy).*matchy;
 
-figure; plot([0:5:325],rmaxx,'k','LineWidth',3); axis([0 325 -50 50])
-figure; plot([0:5:325],rmaxy,'k','LineWidth',3); axis([0 325 -50 50])
+h1=figure; set(h1,'Visible','off')
+plot([0:5:325],rmaxx,'k','LineWidth',3); axis([0 325 -50 50])
+saveas(h1,fullfile(folder,'FRAP Venus Max Displacement',['Maj Axis Venus Disp_' exp '.png']))
+h2=figure; set(h2,'Visible','off')
+plot([0:5:325],rmaxy,'k','LineWidth',3); axis([0 325 -50 50])
+saveas(h2,fullfile(folder,'FRAP Venus Max Displacement',['Min Axis Venus Disp_' exp '.png']))
 
 rmaxcoords = [rmaxx rmaxy];
 
-save(fullfile(pwd,folder,['Venus Max Coords_' exp '.txt']),'rmaxcoords','-ascii')
+save(fullfile(folder,'FRAP Venus Max Displacement',['Venus Max Coords_' exp '.txt']),'rmaxcoords','-ascii')
 
 end
