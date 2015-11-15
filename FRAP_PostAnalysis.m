@@ -10,14 +10,17 @@ for k = 1:numexp
             mkdir(keywords.folder,'FRAP PostProcess Files')
             FRAP_PostProcess(nname,keywords.folder)
             FRAP_PostProcess_Con(nname,keywords.folder)
-            blbn = conFA(i);            
+            blbn = conFA(i);      
+            mkdir(keywords.folder,'FRAP Venus Max Displacement')
             plot_cents(nname,keywords.folder);
             plot_motion(nname,blbn,keywords.folder);
         end
     end
+    mkdir(keywords.folder,'FRAP FA State')
     FA_state(expcell{k},keywords.folder)
+    mkdir(keywords.folder,'FRAP Split Curve Files')
+    mkdir(keywords.folder,'FRAP Split Curve Figures')
     FRAP_split(expcell{k},keywords.folder)
-    disp('FRAP Split Fitting')
     FRAP_FIT_SPLIT(expcell{k},keywords.blchtime+2,keywords)
     FRET_split(expcell{k},['blb_anl_rp_' strrep(expcell{k},'FRAP','FRET') '.txt'],keywords.folder)
 end
