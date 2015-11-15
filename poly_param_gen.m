@@ -7,6 +7,8 @@ tyvec = zeros(nfas+1,1)+2;
 tyvec(2:ncon+1) = 1;
 tyvec(1) = 0;
 
+mkdir(folder,'FRAP Poly Files')
+
 % generate initial polygons & initial parameters
 f = file_search(fname,folder);
 img = double(imread(f{1}));
@@ -21,7 +23,7 @@ for i = 1:nfas+1
     if i ~=1
         [p,pinit(i-1,:)] = FIND_FA(img,p,pstart,xdim,ydim,pix);
     end
-    save(fullfile(pwd,folder,name),'p','-ascii')
+    save(fullfile(folder,'FRAP Poly Files',name),'p','-ascii')
 end
 % pinit = mean(pinit);
 end
