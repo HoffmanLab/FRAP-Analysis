@@ -50,30 +50,23 @@ xmax=ceil(max(p(:,1)));
 ymin=floor(min(p(:,2)));
 ymax=ceil(max(p(:,2)));
 temp=img(ymin-2*pix:ymax+2*pix,xmin-2*pix:xmax+2*pix);
-figure; imagesc(img,[0 max(max(temp))]); hold on;
-patch(p(:,1),p(:,2),'w','EdgeColor','k','FaceColor','none')
-axis([xmin-pix,xmax+pix,ymin-pix,ymax+pix])
-choice = menu('Would you like to continue with this polygon or generate a new one?','Continue','Re-generate');
-close;
-if choice == 2
-    pinit = ParameterSelectorFunction(temp,[0,100],[0,10000],[0,200],pinit);
-    fao = water(temp,pinit);
-    u = unique(fao);
-    blength = 0;
-    big = 0;
-    for i = 2:length(u)
-        l = length(find(fao == u(i)));
-        if l > blength
-            big = u(i);
-            blength = l;
-        end
+pinit = ParameterSelectorFunction(temp,[0,100],[0,10000],[0,200],pinit);
+fao = water(temp,pinit);
+u = unique(fao);
+blength = 0;
+big = 0;
+for i = 2:length(u)
+    l = length(find(fao == u(i)));
+    if l > blength
+        big = u(i);
+        blength = l;
     end
-    temp(:,:) = 0;
-    temp(fao == big) = 1;
-    infa = zeros(xdim,ydim);
-    infa(ymin-2*pix:ymax+2*pix,xmin-2*pix:xmax+2*pix) = temp;
-    p = mask_2_con(infa);
 end
+temp(:,:) = 0;
+temp(fao == big) = 1;
+infa = zeros(xdim,ydim);
+infa(ymin-2*pix:ymax+2*pix,xmin-2*pix:xmax+2*pix) = temp;
+p = mask_2_con(infa);
 end
 
 function p = mask_2_con(mask)
