@@ -6,7 +6,7 @@ imgs = file_search([imgexp '_\d+_t01.TIF'],folder);
 
 for i=1:length(imgs)
     % check that FRAP analysis was completed for this image
-    im = double(imread(imgs{i}));
+    im = double(imread(fullfile(folder,imgs{i})));
     imset = file_search(strrep(imgs{i},'t01','t\d+'),folder);
     if ~isempty(file_search(['norm_FRAP_blch_' strrep(imgs{i},'_t01.TIF','.dat')],folder))
         % plot image & ask user to click approximately in center
@@ -17,15 +17,13 @@ for i=1:length(imgs)
         [x,y] = getpts(f1);
         close(f1);
         polys = file_search(['poly_FRAP_blch_' strrep(imgs{i},'t01.TIF','t\d+_0.dat')],folder);
-        backpolys = file_search(['poly_FRAP_bkg_' strrep(imgs{i},'t01.TIF','t\d+_0.dat')],folder);
-        conpolys = file_search(['poly_FRAP_con_' strrep(imgs{i},'t01.TIF','t\d+_0.dat')],folder);
         mean_front_int = zeros(1,length(polys));
         mean_back_int = zeros(1,length(polys));
-        backv = zeros(1,length(polys));
-        conv = zeros(1,length(polys));
+        backv = load(fullfile(folder,'FRAP Curve Files',['FRAP_bkg_' strrep(imgs{i},'_t01.TIF','.dat')]));
+        conv = load(fullfile(folder,'FRAP Curve Files',['FRAP_con_' strrep(imgs{i},'_t01.TIF','.dat')]));
         for j = 1:length(polys)
             % load polygon, find center & minor axis end points
-            p = load(polys{j});
+            p = load(fullfile(folder,'FRAP Poly Files',polys{j}));
             in = inpolygon(imgix,imgiy,p(:,1),p(:,2));
             [y1,x1] = ind2sub([r,c],find(in==1));
             cx = mean(x1);
@@ -55,15 +53,6 @@ for i=1:length(imgs)
             x_out_side = x1(side ~= in_side);
             ind_out_side = sub2ind([r,c],y_out_side,x_out_side);
             mean_back_int(j) = mean(img(ind_out_side));
-            % get background & control intensities
-            backp = load(backpolys{1});
-            in = inpolygon(imgix,imgiy,backp(:,1),backp(:,2));
-            masked = img.*in;
-            backv(j) = mean(masked(masked~=0));
-            conp = load(conpolys{j});
-            in = inpolygon(imgix,imgiy,conp(:,1),conp(:,2));
-            masked = img.*in;
-            conv(j) = mean(masked(masked~=0));
         end
         % normalize to control & background adhesions
         bs_front_blch = mean_front_int - backv;
@@ -76,7 +65,7 @@ for i=1:length(imgs)
         norm_back_blch = norm_back_blch/mean(norm_back_blch(1:4));
         mean_split = [norm_front_blch; norm_back_blch];
         % output file with 2 columns: front & back intensities
-        save(fullfile(pwd,folder,['split_FRAP_blch_' strrep(imgs{i},'_t01.TIF','.dat')]),'mean_split','-ascii')
+        save(fullfile(folder,'FRAP Split Curve Files',['split_FRAP_blch_' strrep(imgs{i},'_t01.TIF','.dat')]),'mean_split','-ascii')
     end
 end
 end
