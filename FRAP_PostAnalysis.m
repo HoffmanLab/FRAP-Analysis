@@ -22,5 +22,4 @@ for k = 1:numexp
     mkdir(keywords.folder,'FRAP Split Curve Figures')
     FRAP_split(expcell{k},keywords.folder)
     FRAP_FIT_SPLIT(expcell{k},keywords.blchtime+2,keywords)
-    FRET_split(expcell{k},['blb_anl_rp_' strrep(expcell{k},'FRAP','FRET') '.txt'],keywords.folder)
 end
