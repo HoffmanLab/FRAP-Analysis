@@ -1,5 +1,6 @@
 for k = 1:numexp
     analyze = load(fullfile(keywords.folder,'Accessory Files',['analyze_' expcell{k} '.txt']));
+    conFA = load(fullfile(keywords.folder,'Accessory Files',['conFAs_' expcell{k} '.txt']));
     frap_files = file_search([expcell{k} '\w+_t66.TIF'],keywords.folder);
     for i = 1:length(frap_files)
         if analyze(i) ~=0
@@ -9,7 +10,7 @@ for k = 1:numexp
             mkdir(keywords.folder,'FRAP PostProcess Files')
             FRAP_PostProcess(nname,keywords.folder)
             FRAP_PostProcess_Con(nname,keywords.folder)
-            blbn = input('Enter the control FA #: ');            
+            blbn = conFA(i);            
             plot_cents(nname,keywords.folder);
             plot_motion(nname,blbn,keywords.folder);
         end
