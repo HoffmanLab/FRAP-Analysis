@@ -2,7 +2,6 @@ function FA_state(exp_name,folder)
 
 % Find all poly_FRAP_blch that are completely analyzed
 a = file_search(['poly_FRAP_blch_' exp_name '_\d+_t66_0.dat'],folder);
-% a = file_search(['poly_FRAP_blch_' exp_name '_\d+_t66_66_2.dat'],folder);
 r = 2048;
 c = 2048;
 imgix = repmat(1:r,c,1);
@@ -10,11 +9,8 @@ imgiy = repmat([1:c]',1,r); %#ok<NBRAK>
 
 for i = 1:length(a)
    % find centroids
-   p1 = load(strrep(a{i},'t66','t02'));
-%    temp = strrep(a{i},'t66','t02');
-%    temp = strrep(temp,'66','2');
-%    p1 = load(temp);
-   p2 = load(a{i});
+   p1 = load(fullfile(folder,'FRAP Poly Files',strrep(a{i},'t66','t02')));
+   p2 = load(fullfile(folder,'FRAP Poly Files',a{i}));
    in1 = inpolygon(imgix,imgiy,p1(:,1),p1(:,2));
    in2 = inpolygon(imgix,imgiy,p2(:,1),p2(:,2));
    [y1,x1] = ind2sub([r c],find(in1==1));
@@ -24,7 +20,7 @@ for i = 1:length(a)
    cx2 = mean(x2);
    cy2 = mean(y2);
    
-   figure; hold on;
+   h1 = figure; hold on; set(h1,'Visible','off')
    patch(p1(:,1),p1(:,2),'w','EdgeColor','r','FaceColor','none')
    patch(p2(:,1),p2(:,2),'w','EdgeColor','g','FaceColor','none')
    plot(cx1,cy1,'r*')
@@ -80,6 +76,8 @@ for i = 1:length(a)
    legend(['Area 1 = ' num2str(a1) '; Major Axis = ' num2str(mjra1)],['Area 2 = ' num2str(a2) '; Major Axis = ' num2str(mjra2)],...
        ['Centroid Displaced = ' num2str(cntdist)],['Percent Overlap = ' num2str(perover) '%'],...
        ['State = ' state])   
+   
+   saveas(h1,fullfile(folder,'FRAP FA State',['FAState_' exp_name '.png']))
    
 end
 
