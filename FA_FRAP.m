@@ -72,13 +72,13 @@ for i = 1:nele
         type = tyvec(j);
         if type == 0 % Background first
             bname = FRAP_naming(f{1},1,tyvec,ncon);
-            p = load(bname);
+            p = load(fullfile(keywords.folder,'FRAP Poly Files',bname));
             in = inpolygon(imgix,imgiy,p(:,1),p(:,2));
             masked = img.*in;
             backv(i) = mean(masked(masked~=0));
         else % Control or Bleached
             bname = FRAP_naming(f{i},j,tyvec,ncon);
-            p = load(bname);
+            p = load(fullfile(keywords.folder,'FRAP Poly Files',bname));
             in = inpolygon(imgix,imgiy,p(:,1),p(:,2));
             tb = mean(mean(img((img.*in)~=0)));
             if type == 2
@@ -111,7 +111,7 @@ for i = 1:nele
         end
         if i ~= nele
             wname = FRAP_naming(f{i+1},j,tyvec,ncon);
-            save([pwd '/' keywords.folder '/' wname],'p','-ascii')
+            save(fullfile(keywords.folder,'FRAP Poly Files',wname),'p','-ascii')
         end
     end
 end
@@ -122,9 +122,10 @@ s = strfind(nname,'t');
 s = s(end);
 nname = nname(1:s-2);
 
-save(fullfile(pwd,keywords.folder,['FRAP_bkg_' nname '.dat']),'backv','-ascii')
-save(fullfile(pwd,keywords.folder,['FRAP_blch_' nname '.dat']),'blchv','-ascii')
-save(fullfile(pwd,keywords.folder,['FRAP_con_' nname '.dat']),'conv','-ascii')
+mkdir(keywords.folder,'FRAP Curve Files')
+save(fullfile(keywords.folder,'FRAP Curve Files',['FRAP_bkg_' nname '.dat']),'backv','-ascii')
+save(fullfile(keywords.folder,'FRAP Curve Files',['FRAP_blch_' nname '.dat']),'blchv','-ascii')
+save(fullfile(keywords.folder,'FRAP Curve Files',['FRAP_con_' nname '.dat']),'conv','-ascii')
 
 % Normalize & Write Out Data
 
@@ -149,7 +150,7 @@ normblch(i,:) = bsblch(i,:)./bscon;
 normblch(i,:) = normblch(i,:)/mean(normblch(i,1:keywords.blchtime));
 end
 
-save([pwd '/' keywords.folder '/' 'norm_FRAP_blch_' nname '.dat'],'normblch','-ascii')
+save(fullfile(keywords.folder,'FRAP Curve Files',['norm_FRAP_blch_' nname '.dat']),'normblch','-ascii')
 
 end
 
