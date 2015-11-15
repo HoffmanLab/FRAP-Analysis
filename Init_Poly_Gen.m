@@ -3,6 +3,7 @@ if ~keywords.read
     for k = 1:numexp
         frap_files = file_search([expcell{k} '\w+_t66.TIF'],keywords.folder);
         analyze = zeros(length(frap_files));
+        pix = zeros(length(frap_files));
         ncon = zeros(length(frap_files));
         nblch = zeros(length(frap_files));
         conFA = zeros(length(frap_files));
@@ -13,7 +14,7 @@ if ~keywords.read
             disp(frap_files{i})
             analyze(i) = input('Would you like to analyze this set? Enter (1) if yes, (0) if no: ');
             if analyze(i) ~= 0
-                keywords.pix = input('How many pixels to zoom out each time (5 is default)? ');
+                pix(i) = input('How many pixels to zoom out each time (5 is default)? ');
                 ncon(i) = input('How many control adhesions to select? ');
                 nblch(i) = input('How many adhesions did you bleach? ');
                 pstart = input('What FA parameters to start with? ');
@@ -25,6 +26,7 @@ if ~keywords.read
         end
         pinit_mat = cell2mat(pinit);
         mkdir(keywords.folder,'Accessory Files')
+        save(fullfile(keywords.folder,'Accessory Files',['pix_' expcell{k} '.txt']),'pix','-ascii')
         save(fullfile(keywords.folder,'Accessory Files',['pinit_' expcell{k} '.txt']),'pinit_mat','-ascii')
         save(fullfile(keywords.folder,'Accessory Files',['ncon_' expcell{k} '.txt']),'ncon','-ascii')
         save(fullfile(keywords.folder,'Accessory Files',['nblch_' expcell{k} '.txt']),'nblch','-ascii')
