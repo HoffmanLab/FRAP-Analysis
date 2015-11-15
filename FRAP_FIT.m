@@ -1,4 +1,4 @@
-function FRAP_FIT_NEW(dname,npblch,keywords)
+function FRAP_FIT(dname,npblch,keywords)
 
 % f = frap_fit('avg.control','FRAP_FIT_FUNC',2,keywords)
 
@@ -41,20 +41,21 @@ end
 % get files
 % fn = file_search(dname,keywords.folder);
 bkgf = file_search(['FRAP_bkg_' dname '.dat'],keywords.folder);
-bkg = load(bkgf{1});
+bkg = load(fullfile(keywords.folder,'FRAP Curve Files',bkgf{1}));
 conf = file_search(['FRAP_con_' dname '.dat'],keywords.folder);
-con = load(conf{1})';
+con = load(fullfile(keywords.folder,'FRAP Curve Files',conf{1}));
 blchf = file_search(['FRAP_blch_' dname '.dat'],keywords.folder);
-blch = load(blchf{1});
+blch = load(fullfile(keywords.folder,'FRAP Curve Files',blchf{1}));
 fn = file_search(['norm_FRAP_blch_' dname '.dat'],keywords.folder);
 
-figure; hold on;
+h1 = figure; hold on; set(h1,'Visible','off');
 plot(bkg./max(max(bkg)),'g','LineWidth',3)
 plot(con./max(max(con)),'r','LineWidth',3')
 plot(blch./max(max(blch)),'b','LineWidth',3')
 legend('Bkg','Con','Blch')
+saveas(h1,fullfile(keywords.folder,'FRAP Curve Figures',['FRAPCurves_' dname '.png']))
 
-data = load(fn{1});
+data = load(fullfile(keywords.folder,'FRAP Curve Files',fn{1}));
 [r,c] = size(data);
 for i = 1:r
     res = data(i,:);
@@ -89,15 +90,18 @@ for i = 1:r
     
     ft = fittype('FRAP_FIT_FUNC(x,a,b,c)');
     f = fit(t',res',ft,'StartPoint',a);
-    disp(f)
+%     disp(f)
+    coeffs = [f.a f.b f.c];
+    save(fullfile(keywords.folder,'FRAP Curve Figures',['Coeffs_' dname '.txt']),'coeffs','-ascii')
     t12=log(2)/f.c;
     
     if keywords.showfit
-        figure; hold on;
+        h2 = figure; hold on; set(h2,'Visible','off')
         plot(f,t,res);
         legend(['TC = ' num2str(t12)])
         title(strrep(dname,'_',' '))
         axis([0 max(t) 0 1])
+        saveas(h2,fullfile(keywords.folder,'FRAP Curve Figures',['NormFRAP_' dname '.png']))
     end
 end
 
