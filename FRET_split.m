@@ -28,16 +28,12 @@ function FRET_split(expname,bfile,folder)
 fa_files = file_search(['fa_bsa_pre_' expname '_\d+_w1Venus.TIF'],folder);
 fret_files = file_search(['masked_on_Venus_eff_pre_' expname '_\d+_w2TVFRET.TIF'],folder);
 bsa_files = file_search(['masked_on_Venus_bsa_pre_' expname '_\d+_w1Venus.TIF'],folder);
-% bsd_files = file_search(['bsd_pre_' expname '_\d+_w3Teal.TIF'],folder);
 b = load(bfile);
 newfile = zeros(size(b,1),7);
-blbcol = 30; % SHOULDN'T HARD CODE THESE...
-imgcol = 31;
-cellcol = 32;
-szcol = 27;
-
-% [r,c] = size(b);
-% b(:,end+1:end+6) = zeros(size(b,1),6);
+blbcol = 27; % SHOULDN'T HARD CODE THESE...
+imgcol = 28;
+cellcol = 29;
+szcol = 24;
 
 imgs = unique(b(:,imgcol));
 nimgs = length(imgs);
@@ -49,7 +45,6 @@ else
         fa_img = double(imread(fa_files{i}));
         fret_img = double(imread(fret_files{i}));
         bsa_img = double(imread(bsa_files{i}));
-%         bsd_img = double(imread(bsd_files{i}));
         btemp = b(b(:,imgcol) == imgs(i),:);
         cells = unique(btemp(:,cellcol));
         ncells = length(cells);
@@ -108,11 +103,11 @@ else
             end
         end
     end
-	save(fullfile(pwd,folder,['FRETsplit_' bfile '.txt']),'newfile','-ascii')
+	save(fullfile(folder,['FRETsplit_' bfile '.txt']),'newfile','-ascii')
 
 	col_names = {'Image ID','Cell ID','Blob ID','FRET Proximal','FRET Distal','Venus Proximal','Venus Distal'};
 	cell_final_data = num2cell(newfile);
 	cell_final_file = [col_names; cell_final_data];
-	xlswrite(fullfile(pwd,folder,['FRETsplit_' bfile '.xlsx']),cell_final_file)
+	xlswrite(fullfile(folder,['FRETsplit_' bfile '.xlsx']),cell_final_file)
 end
 
