@@ -16,10 +16,8 @@ for k = 1:numexp
             s = strfind(frap_files{i},'t');
             s = s(end);
             nname = frap_files{i}(1:s-2);
-%             disp(['FRAP Fitting: ' nname])
             mkdir(keywords.folder,'FRAP Curve Figures')
             FRAP_FIT(nname,keywords.blchtime+2,keywords)
         end
     end
-    FA_state(expcell{k},keywords.folder)
 end

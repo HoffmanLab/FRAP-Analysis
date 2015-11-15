@@ -11,3 +11,6 @@ Init_Poly_Gen
 % run through FA_FRAP & FRAP_FIT for each -> take out parts that generate
 % initial polygons
 FRAP_Analysis
+
+% do additional FRAP analysis
+FRAP_PostAnalysis
