@@ -77,7 +77,7 @@ for i = 1:length(a)
        ['Centroid Displaced = ' num2str(cntdist)],['Percent Overlap = ' num2str(perover) '%'],...
        ['State = ' state])   
    
-   saveas(h1,fullfile(folder,'FRAP FA State',['FAState_' exp_name '.png']))
+   saveas(h1,fullfile(folder,'FRAP FA State',['FAState_' strrep(a{i},'.dat','.png')]))
    
 end
 
