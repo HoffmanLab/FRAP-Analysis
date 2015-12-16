@@ -12,7 +12,7 @@ maxvy = data(:,9);
 
 % find orientation of blob
 u = strfind(exp,'_');
-short = exp(1:u(1)-1);
+short = exp(1:u(end-1)-1);
 a = file_search(['blb_anl_rp_' short '_FRET.txt'],folder);
 blb = load(fullfile(folder,a{1}));
 blbcol = 27; % SHOULDN'T HARD CODE THESE...
