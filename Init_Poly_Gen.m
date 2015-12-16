@@ -2,13 +2,13 @@ keywords.read = input('Use previously generated polygons? Enter (1) if yes, (0) 
 if ~keywords.read
     for k = 1:numexp
         frap_files = file_search([expcell{k} '\w+_t66.TIF'],keywords.folder);
-        analyze = zeros(length(frap_files));
-        pix = zeros(length(frap_files));
-        ncon = zeros(length(frap_files));
-        nblch = zeros(length(frap_files));
-        conFA = zeros(length(frap_files));
-        blchFA = zeros(length(frap_files));
-        recf = zeros(length(frap_files));
+        analyze = zeros(1,length(frap_files));
+        pix = zeros(1,length(frap_files));
+        ncon = zeros(1,length(frap_files));
+        nblch = zeros(1,length(frap_files));
+        conFA = zeros(1,length(frap_files));
+        blchFA = zeros(1,length(frap_files));
+        recf = zeros(1,length(frap_files));
         pinit = cell(1,1);
         for i = 1:length(frap_files)
             disp(frap_files{i})
@@ -21,7 +21,7 @@ if ~keywords.read
                 recf(i) = input('Enter the recovery fraction (0.25 is default): ');
                 conFA(i) = input('Enter the FA# for the control FA: ');
                 blchFA(i) = input('Enter the FA# for the bleached FA: ');
-                pinit{i,1} = poly_param_gen(strrep(frap_files{i},'t66','t\d+'),ncon(i),nblch(i),pstart,keywords.pix,keywords.folder);
+                pinit{i,1} = poly_param_gen(strrep(frap_files{i},'t66','t\d+'),ncon(i),nblch(i),pstart,pix,keywords.folder);
             end
         end
         pinit_mat = cell2mat(pinit);

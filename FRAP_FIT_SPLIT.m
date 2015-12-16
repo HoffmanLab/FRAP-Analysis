@@ -9,8 +9,8 @@ end
 
 split_files = file_search(['split_FRAP_blch_' dname '\w+.dat'],keywords.folder);
 
-for k = 1:length(split_files)
-    data = load(fullfile(keywords.folder,'FRAP Split Curve Files',split_files{k}));
+for m = 1:length(split_files)
+    data = load(fullfile(keywords.folder,'FRAP Split Curve Files',split_files{m}));
     [r,~] = size(data);
     for i = 1:r
         res = data(i,:);
@@ -46,9 +46,9 @@ for k = 1:length(split_files)
         f = fit(t',res',ft,'StartPoint',a);
         coeffs = [f.a f.b f.c];
         if i == 1
-            save(fullfile(keywords.folder,'FRAP Split Curve Figures',['SplitCoeffsProximal_' dname '.txt']),'coeffs','-ascii')
+            save(fullfile(keywords.folder,'FRAP Split Curve Figures',['SplitCoeffsProximal_' strrep(split_files{m},'.dat','.txt')]),'coeffs','-ascii')
         else
-            save(fullfile(keywords.folder,'FRAP Split Curve Figures',['SplitCoeffsDistal_' dname '.txt']),'coeffs','-ascii')
+            save(fullfile(keywords.folder,'FRAP Split Curve Figures',['SplitCoeffsDistal_' strrep(split_files{m},'.dat','.txt')]),'coeffs','-ascii')
         end
 %         disp(f)
         
@@ -61,9 +61,9 @@ for k = 1:length(split_files)
             title(strrep(dname,'_',' '))
             axis([0 max(t) 0 1])
             if i == 1
-                saveas(h1,fullfile(keywords.folder,'FRAP Split Curve Figures',['SplitFRAPProximal_' dname '.png']))
+                saveas(h1,fullfile(keywords.folder,'FRAP Split Curve Figures',['SplitFRAPProximal_' strrep(split_files{m},'.dat','.png')]))
             else
-                saveas(h1,fullfile(keywords.folder,'FRAP Split Curve Figures',['SplitFRAPDistal_' dname '.png']))
+                saveas(h1,fullfile(keywords.folder,'FRAP Split Curve Figures',['SplitFRAPDistal_' strrep(split_files{m},'.dat','.png')]))
             end
             close all;
         end

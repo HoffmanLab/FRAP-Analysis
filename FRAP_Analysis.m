@@ -12,7 +12,7 @@ for k = 1:numexp
         if analyze(i) ~=0
             keywords.recf = recf(i);
             keywords.pix = pix(i);
-%             FA_FRAP(strrep(frap_files{i},'t66','t\d+'),[ncon(i) nblch(i) reshape(pinit{i,1},1,numel(pinit{i,1}))],keywords)
+            FA_FRAP(strrep(frap_files{i},'t66','t\d+'),[ncon(i) nblch(i) reshape(pinit{i,1},1,numel(pinit{i,1}))],keywords)
             s = strfind(frap_files{i},'t');
             s = s(end);
             nname = frap_files{i}(1:s-2);
