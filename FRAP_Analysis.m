@@ -1,5 +1,4 @@
 for k = 1:numexp
-    % for k = 2
     frap_files = file_search([expcell{k} '\w+_t66.TIF'],keywords.folder);
     pinit_mat = load(fullfile(keywords.folder,'Accessory Files',['pinit_' expcell{k} '.txt']));
     ncon = load(fullfile(keywords.folder,'Accessory Files',['ncon_' expcell{k} '.txt']));
