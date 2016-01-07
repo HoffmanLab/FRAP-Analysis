@@ -14,3 +14,6 @@ FRAP_Analysis
 
 % do additional FRAP analysis
 FRAP_PostAnalysis
+
+% remove folder from path
+rmpath(genpath(keywords.folder))

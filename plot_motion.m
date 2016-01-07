@@ -20,6 +20,7 @@ imgcol = 28;
 cellcol = 29;
 orcol = 26;
 imgn = str2num(exp(u(end)+1:end));
+% imgn = str2num(exp(u(end)+1:end))-1;
 celln = 1;
 blbrow = find(blb(:,imgcol)==imgn & blb(:,cellcol) == celln & blb(:,blbcol) == blbn);
 or = pi - blb(blbrow,orcol);
