@@ -6,8 +6,8 @@ if ~keywords.read
         pix = zeros(1,length(frap_files));
         ncon = zeros(1,length(frap_files));
         nblch = zeros(1,length(frap_files));
-        conFA = zeros(1,length(frap_files));
-        blchFA = zeros(1,length(frap_files));
+%         conFA = zeros(1,length(frap_files));
+%         blchFA = zeros(1,length(frap_files));
         recf = zeros(1,length(frap_files));
         pinit = cell(1,1);
         for i = 1:length(frap_files)
@@ -19,8 +19,8 @@ if ~keywords.read
                 nblch(i) = input('How many adhesions did you bleach? ');
                 pstart = input('What FA parameters to start with? ');
                 recf(i) = input('Enter the recovery fraction (0.25 is default): ');
-                conFA(i) = input('Enter the FA# for the control FA: ');
-                blchFA(i) = input('Enter the FA# for the bleached FA: ');
+%                 conFA(i) = input('Enter the FA# for the control FA: ');
+%                 blchFA(i) = input('Enter the FA# for the bleached FA: ');
                 pinit{i,1} = poly_param_gen(strrep(frap_files{i},'t66','t\d+'),ncon(i),nblch(i),pstart,pix,keywords.folder);
             end
         end
@@ -31,8 +31,8 @@ if ~keywords.read
         save(fullfile(keywords.folder,'Accessory Files',['ncon_' expcell{k} '.txt']),'ncon','-ascii')
         save(fullfile(keywords.folder,'Accessory Files',['nblch_' expcell{k} '.txt']),'nblch','-ascii')
         save(fullfile(keywords.folder,'Accessory Files',['analyze_' expcell{k} '.txt']),'analyze','-ascii')
-        save(fullfile(keywords.folder,'Accessory Files',['conFAs_' expcell{k} '.txt']),'conFA','-ascii')
-        save(fullfile(keywords.folder,'Accessory Files',['blchFAs_' expcell{k} '.txt']),'blchFA','-ascii')
+%         save(fullfile(keywords.folder,'Accessory Files',['conFAs_' expcell{k} '.txt']),'conFA','-ascii')
+%         save(fullfile(keywords.folder,'Accessory Files',['blchFAs_' expcell{k} '.txt']),'blchFA','-ascii')
         save(fullfile(keywords.folder,'Accessory Files',['recf_' expcell{k} '.txt']),'recf','-ascii')
     end
 end
