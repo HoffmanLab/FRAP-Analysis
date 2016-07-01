@@ -6,7 +6,8 @@ for i = 1:length(blob_images)
     outname = ['blbdecay_' blob_images{i}(8:end-4) '.txt'];
     blb_file = (file_search(['blbd_' exp_name '_' num2str(i) '.txt'],folder));
     if isempty(blb_file)
-        blob_decay([exp_name '_FRAP_' num2str(i,'%02d') '_t\d+.TIF'],blob_images{i},outname,folder)
+%         blob_decay([exp_name '_FRAP_' num2str(i,'%02d') '_t\d+.TIF'],blob_images{i},outname,folder)
+        blob_decay([exp_name '_s' num2str(i) '_t\d+.TIF'],blob_images{i},outname,folder);
     else
         blob_decay([exp_name '_FRAP_' num2str(i,'%02d') '_t\d+.TIF'],blob_images{i},outname,blb_file{1},folder)
     end

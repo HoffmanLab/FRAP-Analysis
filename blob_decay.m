@@ -20,9 +20,9 @@ else
     blbarr = zeros(nimg+1,nblbs+1);
     for i = 1:nimg
         img = single(imread(f{i}));
-        sz = size(img);
-        crop = [round(0.0246*sz(1)) round(0.0246*sz(1)) round(0.9509*sz(1)) round(0.9509*sz(1))];
-        img = imcrop(img,crop);
+%         sz = size(img);
+%         crop = [round(0.0246*sz(1)) round(0.0246*sz(1)) round(0.9509*sz(1)) round(0.9509*sz(1))];
+%         img = imcrop(img,crop);
         for j = 1:nblbs
             blbarr(1,j+1) = blbs(j);
             blbarr(i+1,1) = i;
