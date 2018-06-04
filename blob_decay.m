@@ -1,5 +1,5 @@
 function blob_decay(fname,bimg,outname,varargin)
-
+%% testing
 folder = varargin{end};
 addpath(folder)
 addpath(fullfile(folder,'FA Images'))
